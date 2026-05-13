@@ -72,7 +72,7 @@ const schedule = [
     { name: "school", start: "13:16", end: "14:05" }
 ];
 
-const WS_URL = "wss://abcbackend-production.up.railway.app";
+const WS_URL = "wss://tctbbackend-production.up.railway.app";
 const path = window.location.pathname;
 const searchBar = document.getElementById("search");
 const colorOptions = document.getElementById("color-options");
@@ -736,7 +736,7 @@ function renderLessons(lessons) {
             <a href="/lesson/?id=${lesson.id}" class="group relative flex flex-col gap-2">
                 <div class="relative overflow-hidden rounded-xl">
                     <img
-                        src="${lesson.image || (lesson.path && lesson.path + "/icon.png") || `https://abcbackend-production.up.railway.app/proxy/https://lesson126.github.io/img/lesson-${lesson.id}.png`}"
+                        src="${lesson.image || (lesson.path && lesson.path + "/icon.png") || `https://tctbbackend-production.up.railway.app/proxy/https://lesson126.github.io/img/lesson-${lesson.id}.png`}"
                         class="game-icon w-full aspect-square object-cover"
                     />
 
