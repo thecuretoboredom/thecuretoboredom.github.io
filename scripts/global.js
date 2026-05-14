@@ -13,7 +13,7 @@ tailwind.config = {
                 success: "rgb(var(--color-success) / <alpha-value>)",
                 fail:    "rgb(var(--color-fail) / <alpha-value>)",
                 warning: "rgb(var(--color-warning) / <alpha-value>)",
-                theme:   "rgb(var(--color-theme) / <alpha-value>)",
+                theme:   "rgb(var(--color-theme) / <alpha-value>)"
             }
         }
     }
@@ -79,6 +79,10 @@ const colorOptions = document.getElementById("color-options");
 const disguiseOptions = document.getElementById("disguise-options");
 const usernameInput = document.getElementById("username");
 const idInput = document.getElementById("id");
+const gameFunctionalityPrompt = document.getElementById("game-functionality-prompt");
+const gameFunctionalityText = document.getElementById("game-functionality-text");
+const gameLike = document.getElementById("game-like");
+const gameDislike = document.getElementById("game-dislike");
 
 const checkboxes = document.querySelectorAll('.tag-checkbox');
 document.documentElement.style.setProperty('--show-id', '0');
@@ -1207,6 +1211,32 @@ chatInput.addEventListener("input", () => {
     typingTimeout = setTimeout(() => {
         wsSend({ action: "stop_typing", player: session });
     }, 1500);
+});
+
+let gameFunctionalitySent = false;
+
+gameLike.addEventListener("click", () => {
+    if (gameFunctionalitySent) return;
+    wsSend({ action: "gameLike", player: session, game: page });
+    gameFunctionalitySent = true;
+
+    gameFunctionalityText.textContent = "Thanks for your feedback!";
+    gameLike.style.opacity = "0%";
+    gameDislike.style.opacity = "0%";
+    gameLike.disabled = true;
+    gameDislike.disabled = true;
+});
+
+gameDislike.addEventListener("click", () => {
+    if (gameFunctionalitySent) return;
+    wsSend({ action: "gameDislike", player: session, game: page });
+    gameFunctionalitySent = true;
+
+    gameFunctionalityText.textContent = "Thanks for your feedback!";
+    gameLike.style.opacity = "0%";
+    gameDislike.style.opacity = "0%";
+    gameLike.disabled = true;
+    gameDislike.disabled = true;
 });
 
 document.addEventListener("visibilitychange", () => {

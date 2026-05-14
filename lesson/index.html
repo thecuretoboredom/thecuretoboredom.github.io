@@ -28,6 +28,20 @@
             <div class="flex items-center justify-between py-2 px-4">
                 <h1 id="lessonName" class="text-2xl font-semibold text-white">Loading...</h1>
                 
+                <div id="game-functionality-prompt" class="flex flex-col gap-1 items-center justify-center px-4 py-2">
+                    <p id="game-functionality-text" class="text-xs text-white/50">Does this game work for you?</p>
+                    <div class="flex gap-1 items-center justify-center">
+                        <button id="game-like" class="flex gap-1 items-center justify-center ml-2 rounded-full bg-success/15 border border-success/50 text-success px-3 py-1 text-sm transition-all duration-300 ease-in-out hover:scale-105 hover:bg-success/25">
+                            <img src="/assets/icons/success.svg" class="h-[1em] w-[1em]">
+                            Yes
+                        </button>
+                        <button id="game-dislike" class="flex gap-1 items-center justify-center ml-2 rounded-full bg-fail/15 border border-fail/50 text-fail px-3 py-1 text-sm transition-all duration-300 ease-in-out hover:scale-105 hover:bg-fail/25">
+                            <img src="/assets/icons/fail.svg" class="h-[1em] w-[1em]">
+                            No
+                        </button>
+                    </div>
+                </div>
+
                 <button id="fullscreen" class="w-10 h-10 rounded-lg hover:bg-white/5 transition flex items-center justify-center">
                 <img src="/assets/icons/fullscreen.png" class="w-8 h-8 object-contain" alt="Fullscreen">
                 </button>
