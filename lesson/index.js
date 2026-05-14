@@ -9,14 +9,12 @@ const fullscreen = document.getElementById("fullscreen");
 
 function getRecentlyPlayed() {
     let recentlyPlayed = localStorage.getItem("recentlyPlayed");
-
     if (!recentlyPlayed) {
         recentlyPlayed = {};
         localStorage.setItem("recentlyPlayed", JSON.stringify(recentlyPlayed));
     } else {
         recentlyPlayed = JSON.parse(recentlyPlayed);
     }
-
     return recentlyPlayed;
 }
 
@@ -26,17 +24,15 @@ fetch("/lessons.json")
         const lesson = data.lessons.find((l) => l.id === lessonId);
         if (!lesson) {
             frame.src = "about:blank";
-            console.error("Lesson not found");
             return;
         }
 
         const lessonGroup = lesson.lesson;
-        if (lessonGroup === null && !lesson.path) {
-            return;
-        }
+        if (lessonGroup === null && !lesson.path) return;
 
         const targetUrl = `https://lesson126.github.io/lesson${lessonGroup}/lesson-${lessonId}/`;
-        frame.src = (lesson.path && lesson.path + "/game.html") || `https://tctbbackend-production.up.railway.app/proxy/${targetUrl}`;
+        const targetSrc = (lesson.path && lesson.path + "/game.html") || `https://tctbbackend-production.up.railway.app/proxy/${targetUrl}`;
+
         name.textContent = lesson.name;
 
         if (lesson.warning) {
@@ -47,6 +43,21 @@ fetch("/lessons.json")
         const recentlyPlayed = getRecentlyPlayed();
         recentlyPlayed[lessonId] = Date.now();
         localStorage.setItem("recentlyPlayed", JSON.stringify(recentlyPlayed));
+
+        frame.src = "about:blank";
+
+        const onStorageReady = (e) => {
+            if (e.data?.type !== "storageReady") return;
+            window.removeEventListener("message", onStorageReady);
+            clearTimeout(fallback);
+            frame.src = targetSrc;
+        };
+        window.addEventListener("message", onStorageReady);
+
+        const fallback = setTimeout(() => {
+            window.removeEventListener("message", onStorageReady);
+            frame.src = targetSrc;
+        }, 300);
     });
 
 fullscreen.addEventListener("click", () => {
@@ -69,6 +80,7 @@ window.addEventListener("message", (e) => {
         Object.keys(localStorage)
             .filter((k) => k.startsWith(args[0]))
             .forEach((k) => localStorage.removeItem(k));
+    else if (method === "list") value = Object.keys(localStorage).filter((k) => k.startsWith(args[0]));
     else if (method === "length") value = Object.keys(localStorage).filter((k) => k.startsWith(args[0])).length;
     else if (method === "key") {
         const keys = Object.keys(localStorage).filter((k) => k.startsWith(args[0]));
