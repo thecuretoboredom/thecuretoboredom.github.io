@@ -74,13 +74,18 @@ window.addEventListener("message", (e) => {
     let value = null;
 
     if (method === "getItem") value = localStorage.getItem(args[0]);
-    else if (method === "setItem") localStorage.setItem(args[0], args[1]);
-    else if (method === "removeItem") localStorage.removeItem(args[0]);
-    else if (method === "clear")
+    else if (method === "setItem") {
+        localStorage.setItem(args[0], args[1]);
+        value = null;
+    } else if (method === "removeItem") {
+        localStorage.removeItem(args[0]);
+        value = null;
+    } else if (method === "clear") {
         Object.keys(localStorage)
             .filter((k) => k.startsWith(args[0]))
             .forEach((k) => localStorage.removeItem(k));
-    else if (method === "list") value = Object.keys(localStorage).filter((k) => k.startsWith(args[0]));
+        value = null;
+    } else if (method === "list") value = Object.keys(localStorage).filter((k) => k.startsWith(args[0]));
     else if (method === "length") value = Object.keys(localStorage).filter((k) => k.startsWith(args[0])).length;
     else if (method === "key") {
         const keys = Object.keys(localStorage).filter((k) => k.startsWith(args[0]));
