@@ -1213,31 +1213,33 @@ chatInput.addEventListener("input", () => {
     }, 1500);
 });
 
-let gameFunctionalitySent = false;
+if (gameLike && gameDislike) {
+    let gameFunctionalitySent = false;
 
-gameLike.addEventListener("click", () => {
-    if (gameFunctionalitySent) return;
-    wsSend({ action: "gameLike", player: session, game: page });
-    gameFunctionalitySent = true;
+    gameLike.addEventListener("click", () => {
+        if (gameFunctionalitySent) return;
+        wsSend({ action: "gameLike", player: session, game: page });
+        gameFunctionalitySent = true;
 
-    gameFunctionalityText.textContent = "Thanks for your feedback!";
-    gameLike.style.opacity = "0%";
-    gameDislike.style.opacity = "0%";
-    gameLike.disabled = true;
-    gameDislike.disabled = true;
-});
+        gameFunctionalityText.textContent = "Thanks for your feedback!";
+        gameLike.style.opacity = "0%";
+        gameDislike.style.opacity = "0%";
+        gameLike.disabled = true;
+        gameDislike.disabled = true;
+    });
 
-gameDislike.addEventListener("click", () => {
-    if (gameFunctionalitySent) return;
-    wsSend({ action: "gameDislike", player: session, game: page });
-    gameFunctionalitySent = true;
+    gameDislike.addEventListener("click", () => {
+        if (gameFunctionalitySent) return;
+        wsSend({ action: "gameDislike", player: session, game: page });
+        gameFunctionalitySent = true;
 
-    gameFunctionalityText.textContent = "Thanks for your feedback!";
-    gameLike.style.opacity = "0%";
-    gameDislike.style.opacity = "0%";
-    gameLike.disabled = true;
-    gameDislike.disabled = true;
-});
+        gameFunctionalityText.textContent = "Thanks for your feedback!";
+        gameLike.style.opacity = "0%";
+        gameDislike.style.opacity = "0%";
+        gameLike.disabled = true;
+        gameDislike.disabled = true;
+    });
+}
 
 document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") {
