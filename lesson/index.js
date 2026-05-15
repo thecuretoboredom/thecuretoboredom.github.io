@@ -28,10 +28,13 @@ fetch("/lessons.json")
         }
 
         const lessonGroup = lesson.lesson;
-        if (lessonGroup === null && !lesson.path) return;
+        if (lessonGroup === null && !lesson.path && !lesson.url) return;
 
-        const targetUrl = `https://lesson126.github.io/lesson${lessonGroup}/lesson-${lessonId}/`;
-        const targetSrc = (lesson.path && lesson.path + "/game.html") || `https://tctbbackend-production.up.railway.app/proxy/${targetUrl}`;
+        const targetSrc = lesson.path
+            ? lesson.path + "/game.html"
+            : (lesson.url
+            ? `https://tctbbackend-production.up.railway.app/proxy/${lesson.url}`
+            : `https://tctbbackend-production.up.railway.app/proxy/https://lesson126.github.io/lesson${lessonGroup}/lesson-${lessonId}/`);
 
         name.textContent = lesson.name;
 

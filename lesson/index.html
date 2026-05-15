@@ -50,5 +50,77 @@
 
         <script src="/scripts/global.js"></script>
         <script src="./index.js"></script>
+
+        <div id="console-viewer" class="fixed bottom-0 left-0 right-0 z-50 transition-all duration-300" style="height: 32px;">
+            <div id="console-header" class="flex items-center justify-between bg-black/80 backdrop-blur border-t border-white/10 px-4 cursor-pointer select-none" style="height:32px;" onclick="toggleConsole()">
+                <div class="flex items-center gap-2">
+                    <span class="text-white/50 text-xs font-mono">CONSOLE</span>
+                    <span id="console-error-badge" class="hidden text-xs font-mono bg-fail/20 text-fail border border-fail/40 rounded px-1">0 errors</span>
+                </div>
+                <span id="console-chevron" class="text-white/40 text-xs">▲</span>
+            </div>
+            <div id="console-body" class="hidden bg-black/90 backdrop-blur overflow-y-auto font-mono text-xs" style="height: calc(100% - 32px);">
+                <div id="console-entries" class="p-2 flex flex-col gap-0.5"></div>
+            </div>
+        </div>
+
+        <script>
+            (function () {
+                const viewer = document.getElementById("console-viewer");
+                const body = document.getElementById("console-body");
+                const entries = document.getElementById("console-entries");
+                const badge = document.getElementById("console-error-badge");
+                const chevron = document.getElementById("console-chevron");
+
+                let open = false;
+                let errorCount = 0;
+
+                window.toggleConsole = function () {
+                    open = !open;
+                    viewer.style.height = open ? "260px" : "32px";
+                    body.classList.toggle("hidden", !open);
+                    chevron.textContent = open ? "▼" : "▲";
+                    if (open) entries.lastElementChild?.scrollIntoView();
+                };
+
+                const LEVELS = {
+                    log:   { color: "text-white/70",  label: "LOG  " },
+                    warn:  { color: "text-warning",    label: "WARN " },
+                    error: { color: "text-fail",       label: "ERROR" },
+                    info:  { color: "text-blue-400",   label: "INFO " },
+                };
+
+                function addEntry(level, msg) {
+                    const { color, label } = LEVELS[level] || LEVELS.log;
+                    const row = document.createElement("div");
+                    row.className = `flex gap-2 ${color}`;
+                    row.innerHTML = `<span class="opacity-40 shrink-0">${label}</span><span class="break-all">${msg}</span>`;
+                    entries.appendChild(row);
+                    if (open) row.scrollIntoView();
+
+                    if (level === "error") {
+                        errorCount++;
+                        badge.textContent = `${errorCount} error${errorCount !== 1 ? "s" : ""}`;
+                        badge.classList.remove("hidden");
+                    }
+                }
+
+                ["log", "warn", "error", "info"].forEach(level => {
+                    const orig = console[level].bind(console);
+                    console[level] = (...args) => {
+                        orig(...args);
+                        addEntry(level, args.map(a => typeof a === "object" ? JSON.stringify(a) : String(a)).join(" "));
+                    };
+                });
+
+                window.addEventListener("error", e => addEntry("error", `${e.message} (${e.filename}:${e.lineno})`));
+                window.addEventListener("unhandledrejection", e => addEntry("error", `Unhandled promise rejection: ${e.reason}`));
+
+                window.addEventListener("message", e => {
+                    if (e.data?.type === "iframeLog") addEntry(e.data.level, `[iframe] ${e.data.msg}`);
+                    if (e.data?.type === "iframeError") addEntry("error", `[iframe] ${e.data.msg} (${e.data.src}:${e.data.line})`);
+                });
+            })();
+        </script>
     </body>
 </html>

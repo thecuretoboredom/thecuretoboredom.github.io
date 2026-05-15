@@ -5652,6 +5652,16 @@
         "strategy",
         "adventure"
       ]
+    },
+    {
+      "id": 2319,
+      "name": "Goober Dash",
+      "url": "https://gooberdash.winterpixel.io/",
+      "image": "/assets/images/gooberdash.png",
+      "tags": [
+        "platformer",
+        "skill"
+      ]
     }
   ]
 }
